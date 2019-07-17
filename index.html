@@ -9,7 +9,10 @@
 </head>
 <body>
     <div id="app">
-        <user-list v-bind:users="list"></user-list>
+        <div v-if="!isTableShow">
+            Загрузка данных...
+        </div>
+        <user-list v-else v-bind:users="list"></user-list>
     </div>
 
     <template id="usersTable" style="display:none;">
@@ -25,7 +28,7 @@
             </thead>
             <tbody>
                 <tr v-for="item in users" v-bind:key="item.id">
-                    <td>{{ item.id }}</td>
+                    <td>#{{ item.id }}</td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.username }}</td>
                     <td>{{ item.email }}</td>
@@ -56,6 +59,11 @@
             data: function() {
                 return {
                     list: []
+                }
+            },
+            computed: {
+                isTableShow: function() {
+                    return this.list.length > 0;
                 }
             },
             created: function() {
