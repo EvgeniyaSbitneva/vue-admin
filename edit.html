@@ -17,7 +17,7 @@
 </head>
 <body>
     <div id="app" v-cloak>
-        <div v-if="!isFormShow">
+        <div v-if="!currentUser">
             Загрузка данных...
         </div>
         <user-form v-else v-bind:user="currentUser"></user-form>
@@ -70,17 +70,7 @@
             },
             data: function() {
                 return {
-                    currentUser: {}
-                }
-            },
-            computed: {
-                isFormShow: function() {
-                    for (var i in this.currentUser) {
-                        if (this.currentUser.hasOwnProperty(i)) {
-                            return true;
-                        }
-                    }
-                    return false;
+                    currentUser: null
                 }
             },
             created: function() {
