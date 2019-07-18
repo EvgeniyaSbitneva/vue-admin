@@ -6,13 +6,96 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .form {
+            padding: 40px;
+        }
+    </style>
 </head>
 <body>
-    <div id="#app">
-        <div v-if="!isTableShow">
+    <div id="app">
+        <div v-if="!isFormShow">
             Загрузка данных...
         </div>
-        <users-form v-else v-bind:user="list[0]"></users-form>
+        <user-form v-else v-bind:user="currentUser"></user-form>
     </div>
+
+    <template id="userForm" style="display:none;">
+        <div class="form">
+            <div class="form-group">
+                <label for="id-input">ID</label>
+                <input class="form-control" type="text" id="id-input" name="id" v-bind:value.number="user.id" readonly>
+            </div>
+            <div class="form-group">
+                <label for="name-input">Имя</label>
+                <input class="form-control" type="text" id="name-input" name="name" v-bind:value="user.name">
+            </div>
+            <div class="form-group">
+                <label for="username-input">Никнейм</label>
+                <input class="form-control" type="text" id="username-input" name="username" v-bind:value="user.username">
+            </div>
+            <div class="form-group">
+                <label for="email-input">Email</label>
+                <input class="form-control" type="email" id="email-input" name="email" v-bind:value="user.email">
+            </div>
+            <div class="form-group">
+                <label for="website-input">Сайт</label>
+                <input class="form-control" type="text" id="website-input" name="website" v-bind:value="user.website">
+            </div>
+            <button class="btn btn-primary" type="button">Сохранить</button>
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+
+    <script>
+        var userForm = {
+            template: '#userForm',
+            name: 'UserForm',
+            props: {
+                user: {
+                    type: Object,
+                    required: true
+                }
+            }
+        }
+        var vm = new Vue ({
+            el: '#app',
+            components: {
+                'user-form': userForm
+            },
+            data: function() {
+                return {
+                    list: []
+                }
+            },
+            computed: {
+                isFormShow: function() {
+                    return this.list.length > 0;
+                },
+                currentUser: function() {
+                    return this.list[0]
+                }
+            },
+            created: function() {
+                this.loadUsersData();
+            },
+            methods: {
+                loadUsersData: function() {
+                    var that = this;
+
+                    axios.get('http://jsonplaceholder.typicode.com/users')
+                        .then(function(response){
+                            console.log('Users data loading success');
+                            that.list = response.data;
+                        })
+                        .catch(function(error) {
+                            console.error(error);
+                        });
+                }
+            }
+        })
+    </script>
 </body>
 </html>
